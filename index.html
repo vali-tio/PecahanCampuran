@@ -1,235 +1,186 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
+<!DOCTYPE html><html lang="id"><head><meta name="x-poe-datastore-behavior" content="local_only"><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://puc.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jadwal Pelajaran</title>
-   <link rel="manifest" href="manifest.webmanifest">
+  <title>Belajar Pecahan Campuran</title>
+    <link rel="manifest" href="manifest.webmanifest">
   <style>
-    body { font-family: Arial, sans-serif; margin: 0; padding: 20px; background: #f4f4f9; color: #333; transition: background 0.3s, color 0.3s; }
-    .dark { background: #1e1e1e; color: #f4f4f9; }
-    .container { max-width: 600px; margin: auto; }
-    select, input, button, textarea { padding: 8px; margin: 5px 0; border-radius: 6px; border: 1px solid #ccc; background: inherit; color: inherit; }
-    button { cursor: pointer; }
-    .btn { margin: 2px; padding: 6px 12px; border: none; border-radius: 6px; }
-    .btn-green { background: #28a745; color: #fff; }
-    .btn-blue { background: #007bff; color: #fff; }
-    .btn-red { background: #dc3545; color: #fff; }
-    .btn-yellow { background: #ffc107; color: #000; }
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-    th, td { border: 1px solid #ccc; padding: 8px; text-align: center; }
-    th { background: #eee; }
-    .dark th { background: #333; }
-    .dark td, .dark th { border-color: #555; }
-    textarea { width: 100%; min-height: 80px; margin-top: 10px; resize: vertical; box-sizing: border-box; }
-    tr.dragging { opacity: 0.5; }
+    body{margin:0;background:#0f172a;color:#e5e7eb;font-family:system-ui,Segoe UI,Roboto,Ubuntu,Arial;padding:20px}
+    .title{font-size:26px;font-weight:800;margin-bottom:12px;background:linear-gradient(90deg,#22d3ee,#a78bfa);-webkit-background-clip:text;color:transparent}
+    .card{background:#111827;border:1px solid rgba(255,255,255,.1);border-radius:16px;padding:16px;margin-bottom:20px}
+    label{font-size:13px;font-weight:600}
+    input,select,button{padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,.2);background:#1f2937;color:#e5e7eb}
+    .row{display:flex;flex-wrap:wrap;gap:16px;margin-bottom:12px}
+    .col{flex:1 1 160px}
+    button{cursor:pointer;font-weight:600}
+    button.primary{background:linear-gradient(90deg,#22d3ee,#a78bfa);color:#0f172a;border:none}
+    .badge{display:inline-block;padding:4px 10px;border-radius:999px;background:#0b1229;font-size:13px;margin-left:8px}
+    .steps{background:rgba(255,255,255,.05);padding:14px;border-radius:12px;white-space:pre-wrap;font-size:14px;line-height:1.6}
+    .mixed{display:flex;align-items:center;gap:6px;justify-content:center}
+    .whole{width:50px}
+    .frac-input{display:grid;grid-template-rows:auto 2px auto;align-items:center;justify-items:center;width:70px}
+    .frac-input .bar{height:2px;background:#e5e7eb;width:100%}
+    .frac-input input{text-align:center;width:100%}
+    .frac{display:inline-grid;grid-template-rows:auto 2px auto;align-items:center;gap:2px;margin:0 3px}
+    .frac .bar{height:2px;background:currentColor}
+    .c1{color:#38bdf8}.c2{color:#4ade80}.c3{color:#facc15}
   </style>
-</head>
-<footer id="donateFooter">
-  <span>Gratis untuk semua</span>
-  <a href="https://saweria.co/valitio" target="_blank" rel="noopener noreferrer">
-    💝 Dukung via Saweria
-  </a>
-</footer>
-
-<style>
-  #donateFooter {
-    position: fixed;
-    bottom: 0; left: 0;
-    width: 100%;
-    background: var(--card);
-    border-top: 1px solid var(--border);
-    color: var(--text);
-    font-size: 0.9rem;
-    text-align: center;
-    padding: 10px;
-    display: flex;
-    justify-content: center;
-    gap: 10px;
-    z-index: 999;
-  }
-  #donateFooter a {
-    color: #f97316;
-    font-weight: 600;
-    text-decoration: none;
-  }
-  #donateFooter a:hover {
-    text-decoration: underline;
-  }
-</style>
-
+<script src="https://puc.poecdn.net/authenticated_preview_page/syncedState.bd4eeeb8e8e02052ee92.js"></script></head>
 <body>
-<div class="container">
-  <h2>Jadwal</h2>
-  <div>
-    <label>Pilih Hari:</label>
-    <select id="daySelect"></select>
-    <button class="btn btn-green" onclick="addDay()">+ Hari</button>
-    <button class="btn btn-red" onclick="removeDay()">- Hari</button>
+  <div class="title">Belajar Pecahan Campuran</div>
+  <div class="card">
+    <div class="row">
+      <label><input type="checkbox" id="useThreeCamp" style="width:auto;margin-right:6px"> Gunakan 3 Pecahan Campuran</label>
+    </div>
+    <div class="row">
+      <div class="col">
+        <label>Jenis Operasi</label>
+        <select id="op">
+          <option value="add">Penjumlahan</option>
+          <option value="sub">Pengurangan</option>
+          <option value="mul">Perkalian</option>
+          <option value="div">Pembagian</option>
+        </select>
+      </div>
+      <div class="col">
+        <label>Pecahan Campuran 1</label>
+        <div class="mixed">
+          <input id="w1" type="number" value="1" class="whole">
+          <div class="frac-input"><input id="a" type="number" value="1"><div class="bar"></div><input id="b" type="number" value="2"></div>
+        </div>
+      </div>
+      <div class="col">
+        <label>Pecahan Campuran 2</label>
+        <div class="mixed">
+          <input id="w2" type="number" value="1" class="whole">
+          <div class="frac-input"><input id="c" type="number" value="1"><div class="bar"></div><input id="d" type="number" value="3"></div>
+        </div>
+      </div>
+      <div class="col" id="colCamp3" style="display:none">
+        <label>Pecahan Campuran 3</label>
+        <div class="mixed">
+          <input id="w3" type="number" value="1" class="whole">
+          <div class="frac-input"><input id="e" type="number" value="1"><div class="bar"></div><input id="f" type="number" value="4"></div>
+        </div>
+      </div>
+      <div class="col">
+        <label>Jawaban Anda</label>
+        <div class="frac-input"><input id="ansN" type="number"><div class="bar"></div><input id="ansD" type="number"></div>
+      </div>
+    </div>
+    <div class="row">
+      <button class="primary" id="btnSteps">📖 Tampilkan Langkah</button>
+      <button id="btnCheck">✅ Cek Jawaban</button>
+      <span id="status" class="badge">Siap</span>
+    </div>
   </div>
-  <div>
-    <input type="text" id="subjectInput" placeholder="Tambah mata pelajaran...">
-    <button class="btn btn-green" onclick="addSubject()">+ Tambah</button>
+  <div class="card">
+    <div><b>Langkah Pengerjaan:</b></div>
+    <div id="steps" class="steps">Belum ada langkah.</div>
   </div>
-  <div>
-    <button class="btn btn-blue" onclick="saveData()">Simpan</button>
-    <button class="btn btn-green" onclick="importData()">Import</button>
-    <button class="btn btn-green" onclick="backupData()">Backup</button>
-    <button class="btn btn-yellow" onclick="toggleDarkMode()">🌙/☀️</button>
-  </div>
-
-  <table id="scheduleTable">
-    <thead>
-      <tr><th>No</th><th>Mata Pelajaran</th><th>Aksi</th></tr>
-    </thead>
-    <tbody></tbody>
-  </table>
-
-  <div>
-    <h3>Catatan:</h3>
-    <textarea id="notes" placeholder="Tulis catatan di sini..."></textarea>
-  </div>
-</div>
 
 <script>
-  let data = JSON.parse(localStorage.getItem('jadwalData')) || { days: { 'Senin': [], }, notes: {} };
-  const daySelect = document.getElementById('daySelect');
-  const subjectInput = document.getElementById('subjectInput');
-  const scheduleTable = document.getElementById('scheduleTable').querySelector('tbody');
-  const notes = document.getElementById('notes');
-  let dragSrcEl = null;
+// util
+const gcd=(a,b)=>{a=Math.abs(a);b=Math.abs(b);while(b){[a,b]=[b,a%b]}return a||1};
+const lcm=(a,b)=>Math.abs(a*b)/gcd(a,b);
+const simplify=(n,d)=>{if(d<0){n=-n;d=-d}const g=gcd(n,d);return [n/g,d/g]};
+const fromMixed=(w,n,d)=> w*d+n;
+const fmtFrac=(n,d)=>`<span class='frac'><span>${n}</span><span class='bar'></span><span>${d}</span></span>`;
 
-  function renderDays(){
-    daySelect.innerHTML = '';
-    for (let d in data.days){
-      let opt = document.createElement('option');
-      opt.value = d; opt.textContent = d;
-      daySelect.appendChild(opt);
-    }
-    renderSchedule();
+// Penjumlahan
+function addFrac(a,b,c,d){
+  const L=lcm(b,d),n1=a*L/b,n2=c*L/d,sum=n1+n2,[nS,dS]=simplify(sum,L);
+  let steps=`Langkah 1: KPK penyebut ${b} dan ${d} adalah ${L}\n`;
+  steps+=`Langkah 2: Ubah pecahan → ${fmtFrac(a,b)}=${fmtFrac(n1,L)}, ${fmtFrac(c,d)}=${fmtFrac(n2,L)}\n`;
+  steps+=`Langkah 3: Jumlahkan → ${n1}+${n2}=${sum}\n`;
+  steps+=`Langkah 4: Hasil = ${fmtFrac(sum,L)} = ${fmtFrac(nS,dS)}`;
+  return {n:nS,d:dS,steps};
+}
+function addThreeFrac(a,b,c,d,e,f){
+  const L=lcm(lcm(b,d),f),n1=a*L/b,n2=c*L/d,n3=e*L/f,sum=n1+n2+n3,[nS,dS]=simplify(sum,L);
+  let steps=`Langkah 1: KPK penyebut ${b}, ${d}, ${f} adalah ${L}\n`;
+  steps+=`Langkah 2: Ubah pecahan → ${fmtFrac(a,b)}=${fmtFrac(n1,L)}, ${fmtFrac(c,d)}=${fmtFrac(n2,L)}, ${fmtFrac(e,f)}=${fmtFrac(n3,L)}\n`;
+  steps+=`Langkah 3: Jumlahkan → ${n1}+${n2}+${n3}=${sum}\n`;
+  steps+=`Langkah 4: Hasil = ${fmtFrac(sum,L)} = ${fmtFrac(nS,dS)}`;
+  return {n:nS,d:dS,steps};
+}
+// Pengurangan
+function subFrac(a,b,c,d){
+  const L=lcm(b,d),n1=a*L/b,n2=c*L/d,diff=n1-n2,[nS,dS]=simplify(diff,L);
+  let steps=`Langkah 1: KPK penyebut ${b} dan ${d} adalah ${L}\n`;
+  steps+=`Langkah 2: Ubah pecahan → ${fmtFrac(a,b)}=${fmtFrac(n1,L)}, ${fmtFrac(c,d)}=${fmtFrac(n2,L)}\n`;
+  steps+=`Langkah 3: Kurangkan → ${n1}-${n2}=${diff}\n`;
+  steps+=`Langkah 4: Hasil = ${fmtFrac(diff,L)} = ${fmtFrac(nS,dS)}`;
+  return {n:nS,d:dS,steps};
+}
+function subThree(a,b,c,d,e,f){
+  const L=lcm(lcm(b,d),f),n1=a*L/b,n2=c*L/d,n3=e*L/f,diff=n1-n2-n3,[nS,dS]=simplify(diff,L);
+  let steps=`Langkah 1: KPK penyebut ${b}, ${d}, ${f} adalah ${L}\n`;
+  steps+=`Langkah 2: Ubah pecahan → ${fmtFrac(a,b)}=${fmtFrac(n1,L)}, ${fmtFrac(c,d)}=${fmtFrac(n2,L)}, ${fmtFrac(e,f)}=${fmtFrac(n3,L)}\n`;
+  steps+=`Langkah 3: Kurangkan → ${n1}-${n2}-${n3}=${diff}\n`;
+  steps+=`Langkah 4: Hasil = ${fmtFrac(diff,L)} = ${fmtFrac(nS,dS)}`;
+  return {n:nS,d:dS,steps};
+}
+// Perkalian
+function mulFrac(a,b,c,d){
+  const n=a*c,den=b*d,[nS,dS]=simplify(n,den);
+  let steps=`Langkah 1: Kalikan pembilang → ${a}×${c}=${n}\n`;
+  steps+=`Langkah 2: Kalikan penyebut → ${b}×${d}=${den}\n`;
+  steps+=`Langkah 3: Hasil = ${fmtFrac(n,den)} = ${fmtFrac(nS,dS)}`;
+  return {n:nS,d:dS,steps};
+}
+function mulThree(a,b,c,d,e,f){
+  const n=a*c*e,den=b*d*f,[nS,dS]=simplify(n,den);
+  let steps=`Langkah 1: Kalikan pembilang → ${a}×${c}×${e}=${n}\n`;
+  steps+=`Langkah 2: Kalikan penyebut → ${b}×${d}×${f}=${den}\n`;
+  steps+=`Langkah 3: Hasil = ${fmtFrac(n,den)} = ${fmtFrac(nS,dS)}`;
+  return {n:nS,d:dS,steps};
+}
+// Pembagian
+function divFrac(a,b,c,d){
+  const n=a*d,den=b*c,[nS,dS]=simplify(n,den);
+  let steps=`Langkah 1: Balik pecahan kedua → ${fmtFrac(c,d)} jadi ${fmtFrac(d,c)}\n`;
+  steps+=`Langkah 2: Kalikan → ${fmtFrac(a,b)} × ${fmtFrac(d,c)} = ${fmtFrac(n,den)}\n`;
+  steps+=`Langkah 3: Sederhanakan → ${fmtFrac(nS,dS)}`;
+  return {n:nS,d:dS,steps};
+}
+function divThree(a,b,c,d,e,f){
+  const n=a*d*f,den=b*c*e,[nS,dS]=simplify(n,den);
+  let steps=`Langkah 1: Balik pecahan pembagi → ${fmtFrac(c,d)} jadi ${fmtFrac(d,c)}, ${fmtFrac(e,f)} jadi ${fmtFrac(f,e)}\n`;
+  steps+=`Langkah 2: Kalikan semua → ${a}×${d}×${f}=${n}, ${b}×${c}×${e}=${den}\n`;
+  steps+=`Langkah 3: Hasil = ${fmtFrac(n,den)} = ${fmtFrac(nS,dS)}`;
+  return {n:nS,d:dS,steps};
+}
+
+// UI
+const el=id=>document.getElementById(id);
+function getInputs(){
+  const w1=parseInt(el('w1').value||0),a=parseInt(el('a').value||0),b=parseInt(el('b').value||1);
+  const w2=parseInt(el('w2').value||0),c=parseInt(el('c').value||0),d=parseInt(el('d').value||1);
+  const w3=parseInt(el('w3').value||0),e=parseInt(el('e').value||0),f=parseInt(el('f').value||1);
+  const n1=fromMixed(w1,a,b),n2=fromMixed(w2,c,d),n3=fromMixed(w3,e,f);
+  return {a:n1,b,c:n2,d,e:n3,f};
+}
+function compute(){
+  const {a,b,c,d,e,f}=getInputs();
+  const three=el('useThreeCamp').checked;
+  switch(el('op').value){
+    case'add':return three?addThreeFrac(a,b,c,d,e,f):addFrac(a,b,c,d);
+    case'sub':return three?subThree(a,b,c,d,e,f):subFrac(a,b,c,d);
+    case'mul':return three?mulThree(a,b,c,d,e,f):mulFrac(a,b,c,d);
+    case'div':return three?divThree(a,b,c,d,e,f):divFrac(a,b,c,d);
   }
-
-  function addDay(){
-    let name = prompt('Nama hari:');
-    if(name && !data.days[name]){ data.days[name] = []; renderDays(); saveData(); }
-  }
-
-  function removeDay(){
-    let d = daySelect.value;
-    if(confirm('Hapus hari ' + d + '?')){
-      delete data.days[d];
-      delete data.notes[d];
-      renderDays(); saveData();
-    }
-  }
-
-  function addSubject(){
-    let d = daySelect.value;
-    let subj = subjectInput.value.trim();
-    if(subj){
-      data.days[d].push(subj);
-      subjectInput.value = '';
-      renderSchedule(); saveData();
-    }
-  }
-
-  function removeSubject(index){
-    let d = daySelect.value;
-    data.days[d].splice(index,1);
-    renderSchedule(); saveData();
-  }
-
-  function editSubject(index){
-    let d = daySelect.value;
-    let cell = document.getElementById('subj-'+index);
-    cell.contentEditable = true;
-    cell.focus();
-    cell.onblur = function(){
-      data.days[d][index] = cell.textContent.trim();
-      cell.contentEditable = false;
-      saveData();
-    };
-  }
-
-  function renderSchedule(){
-    let d = daySelect.value;
-    scheduleTable.innerHTML = '';
-    data.days[d].forEach((subj,i)=>{
-      let tr = document.createElement('tr');
-      tr.setAttribute('draggable','true');
-      tr.innerHTML = `<td>${i+1}</td>
-                      <td id="subj-${i}">${subj}</td>
-                      <td>
-                        <button class='btn btn-blue' onclick='editSubject(${i})'>✏️</button>
-                        <button class='btn btn-red' onclick='removeSubject(${i})'>🗑️</button>
-                      </td>`;
-      addDnDHandlers(tr, i);
-      scheduleTable.appendChild(tr);
-    });
-    notes.value = data.notes[d] || '';
-  }
-
-  function saveData(){
-    let d = daySelect.value;
-    data.notes[d] = notes.value;
-    localStorage.setItem('jadwalData', JSON.stringify(data));
-    alert('Data disimpan!');
-  }
-
-  function backupData(){
-    let blob = new Blob([JSON.stringify(data)], {type:'application/json'});
-    let a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = 'jadwal.json';
-    a.click();
-  }
-
-  function importData(){
-    let inp = document.createElement('input');
-    inp.type = 'file';
-    inp.accept = 'application/json';
-    inp.onchange = e=>{
-      let file = e.target.files[0];
-      let reader = new FileReader();
-      reader.onload = ()=>{ data = JSON.parse(reader.result); renderDays(); saveData(); };
-      reader.readAsText(file);
-    };
-    inp.click();
-  }
-
-  function toggleDarkMode(){
-    document.body.classList.toggle('dark');
-  }
-
-  function addDnDHandlers(row, index){
-    row.addEventListener('dragstart', (e)=>{
-      dragSrcEl = index;
-      row.classList.add('dragging');
-    });
-    row.addEventListener('dragend', ()=>{
-      row.classList.remove('dragging');
-    });
-    row.addEventListener('dragover', (e)=>{
-      e.preventDefault();
-    });
-    row.addEventListener('drop', (e)=>{
-      let d = daySelect.value;
-      let rows = Array.from(scheduleTable.querySelectorAll('tr'));
-      let dropIndex = rows.indexOf(row);
-      let moved = data.days[d].splice(dragSrcEl,1)[0];
-      data.days[d].splice(dropIndex,0,moved);
-      renderSchedule(); saveData();
-    });
-  }
-
-  daySelect.onchange = renderSchedule;
-  renderDays();
-      // Register Service Worker
+  return {n:0,d:1,steps:""}
+}
+function showSteps(){const {steps}=compute();el('steps').innerHTML=steps;el('status').textContent="Langkah ditampilkan"}
+function checkAnswer(){const {n,d}=compute();let an=parseInt(el('ansN').value||0),ad=parseInt(el('ansD').value||1);if(ad===0){el('status').textContent="Penyebut jawaban 0";return}const [anS,adS]=simplify(an,ad),[nS,dS]=simplify(n,d);el('status').textContent=(anS===nS&&adS===dS)?"Benar! 🎉":`Belum tepat → ${nS}/${dS}`}
+el('btnSteps').onclick=showSteps;el('btnCheck').onclick=checkAnswer;
+el('useThreeCamp').onchange=function(){el('colCamp3').style.display=this.checked?"block":"none";}
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("service-worker.js")
         .then(() => console.log("Service Worker registered"))
         .catch(err => console.error("SW registration failed:", err));
     }
-</script>
-</body>
-</html>
+  </script>
+
+
+</body></html>
