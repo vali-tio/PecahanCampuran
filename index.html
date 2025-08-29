@@ -22,7 +22,6 @@
     .frac-input input{text-align:center;width:100%}
     .frac{display:inline-grid;grid-template-rows:auto 2px auto;align-items:center;gap:2px;margin:0 3px}
     .frac .bar{height:2px;background:currentColor}
-    .c1{color:#38bdf8}.c2{color:#4ade80}.c3{color:#facc15}
   </style>
   <footer id="donateFooter">
   <span>Gratis untuk semua</span>
@@ -96,8 +95,15 @@
         </div>
       </div>
       <div class="col">
-        <label>Jawaban Anda</label>
-        <div class="frac-input"><input id="ansN" type="number"><div class="bar"></div><input id="ansD" type="number"></div>
+        <label>Jawaban Anda (Campuran)</label>
+        <div class="mixed">
+          <input id="ansW" type="number" placeholder="bil" class="whole">
+          <div class="frac-input">
+            <input id="ansN" type="number" placeholder="pembilang">
+            <div class="bar"></div>
+            <input id="ansD" type="number" placeholder="penyebut">
+          </div>
+        </div>
       </div>
     </div>
     <div class="row">
@@ -118,6 +124,12 @@ const lcm=(a,b)=>Math.abs(a*b)/gcd(a,b);
 const simplify=(n,d)=>{if(d<0){n=-n;d=-d}const g=gcd(n,d);return [n/g,d/g]};
 const fromMixed=(w,n,d)=> w*d+n;
 const fmtFrac=(n,d)=>`<span class='frac'><span>${n}</span><span class='bar'></span><span>${d}</span></span>`;
+function toMixed(n,d){
+  const whole=Math.floor(n/d);
+  const rem=n%d;
+  if(rem===0) return `${whole}`;
+  return whole>0?`${whole} ${rem}/${d}`:`${rem}/${d}`;
+}
 
 // Penjumlahan
 function addFrac(a,b,c,d){
@@ -125,7 +137,8 @@ function addFrac(a,b,c,d){
   let steps=`Langkah 1: KPK penyebut ${b} dan ${d} adalah ${L}\n`;
   steps+=`Langkah 2: Ubah pecahan → ${fmtFrac(a,b)}=${fmtFrac(n1,L)}, ${fmtFrac(c,d)}=${fmtFrac(n2,L)}\n`;
   steps+=`Langkah 3: Jumlahkan → ${n1}+${n2}=${sum}\n`;
-  steps+=`Langkah 4: Hasil = ${fmtFrac(sum,L)} = ${fmtFrac(nS,dS)}`;
+  steps+=`Langkah 4: Hasil = ${fmtFrac(sum,L)} = ${fmtFrac(nS,dS)}\n`;
+  steps+=`Hasil campuran: ${toMixed(nS,dS)}`;
   return {n:nS,d:dS,steps};
 }
 function addThreeFrac(a,b,c,d,e,f){
@@ -133,7 +146,8 @@ function addThreeFrac(a,b,c,d,e,f){
   let steps=`Langkah 1: KPK penyebut ${b}, ${d}, ${f} adalah ${L}\n`;
   steps+=`Langkah 2: Ubah pecahan → ${fmtFrac(a,b)}=${fmtFrac(n1,L)}, ${fmtFrac(c,d)}=${fmtFrac(n2,L)}, ${fmtFrac(e,f)}=${fmtFrac(n3,L)}\n`;
   steps+=`Langkah 3: Jumlahkan → ${n1}+${n2}+${n3}=${sum}\n`;
-  steps+=`Langkah 4: Hasil = ${fmtFrac(sum,L)} = ${fmtFrac(nS,dS)}`;
+  steps+=`Langkah 4: Hasil = ${fmtFrac(sum,L)} = ${fmtFrac(nS,dS)}\n`;
+  steps+=`Hasil campuran: ${toMixed(nS,dS)}`;
   return {n:nS,d:dS,steps};
 }
 // Pengurangan
@@ -142,7 +156,8 @@ function subFrac(a,b,c,d){
   let steps=`Langkah 1: KPK penyebut ${b} dan ${d} adalah ${L}\n`;
   steps+=`Langkah 2: Ubah pecahan → ${fmtFrac(a,b)}=${fmtFrac(n1,L)}, ${fmtFrac(c,d)}=${fmtFrac(n2,L)}\n`;
   steps+=`Langkah 3: Kurangkan → ${n1}-${n2}=${diff}\n`;
-  steps+=`Langkah 4: Hasil = ${fmtFrac(diff,L)} = ${fmtFrac(nS,dS)}`;
+  steps+=`Langkah 4: Hasil = ${fmtFrac(diff,L)} = ${fmtFrac(nS,dS)}\n`;
+  steps+=`Hasil campuran: ${toMixed(nS,dS)}`;
   return {n:nS,d:dS,steps};
 }
 function subThree(a,b,c,d,e,f){
@@ -150,7 +165,8 @@ function subThree(a,b,c,d,e,f){
   let steps=`Langkah 1: KPK penyebut ${b}, ${d}, ${f} adalah ${L}\n`;
   steps+=`Langkah 2: Ubah pecahan → ${fmtFrac(a,b)}=${fmtFrac(n1,L)}, ${fmtFrac(c,d)}=${fmtFrac(n2,L)}, ${fmtFrac(e,f)}=${fmtFrac(n3,L)}\n`;
   steps+=`Langkah 3: Kurangkan → ${n1}-${n2}-${n3}=${diff}\n`;
-  steps+=`Langkah 4: Hasil = ${fmtFrac(diff,L)} = ${fmtFrac(nS,dS)}`;
+  steps+=`Langkah 4: Hasil = ${fmtFrac(diff,L)} = ${fmtFrac(nS,dS)}\n`;
+  steps+=`Hasil campuran: ${toMixed(nS,dS)}`;
   return {n:nS,d:dS,steps};
 }
 // Perkalian
@@ -158,14 +174,16 @@ function mulFrac(a,b,c,d){
   const n=a*c,den=b*d,[nS,dS]=simplify(n,den);
   let steps=`Langkah 1: Kalikan pembilang → ${a}×${c}=${n}\n`;
   steps+=`Langkah 2: Kalikan penyebut → ${b}×${d}=${den}\n`;
-  steps+=`Langkah 3: Hasil = ${fmtFrac(n,den)} = ${fmtFrac(nS,dS)}`;
+  steps+=`Langkah 3: Hasil = ${fmtFrac(n,den)} = ${fmtFrac(nS,dS)}\n`;
+  steps+=`Hasil campuran: ${toMixed(nS,dS)}`;
   return {n:nS,d:dS,steps};
 }
 function mulThree(a,b,c,d,e,f){
   const n=a*c*e,den=b*d*f,[nS,dS]=simplify(n,den);
   let steps=`Langkah 1: Kalikan pembilang → ${a}×${c}×${e}=${n}\n`;
   steps+=`Langkah 2: Kalikan penyebut → ${b}×${d}×${f}=${den}\n`;
-  steps+=`Langkah 3: Hasil = ${fmtFrac(n,den)} = ${fmtFrac(nS,dS)}`;
+  steps+=`Langkah 3: Hasil = ${fmtFrac(n,den)} = ${fmtFrac(nS,dS)}\n`;
+  steps+=`Hasil campuran: ${toMixed(nS,dS)}`;
   return {n:nS,d:dS,steps};
 }
 // Pembagian
@@ -173,14 +191,16 @@ function divFrac(a,b,c,d){
   const n=a*d,den=b*c,[nS,dS]=simplify(n,den);
   let steps=`Langkah 1: Balik pecahan kedua → ${fmtFrac(c,d)} jadi ${fmtFrac(d,c)}\n`;
   steps+=`Langkah 2: Kalikan → ${fmtFrac(a,b)} × ${fmtFrac(d,c)} = ${fmtFrac(n,den)}\n`;
-  steps+=`Langkah 3: Sederhanakan → ${fmtFrac(nS,dS)}`;
+  steps+=`Langkah 3: Hasil = ${fmtFrac(n,den)} = ${fmtFrac(nS,dS)}\n`;
+  steps+=`Hasil campuran: ${toMixed(nS,dS)}`;
   return {n:nS,d:dS,steps};
 }
 function divThree(a,b,c,d,e,f){
   const n=a*d*f,den=b*c*e,[nS,dS]=simplify(n,den);
   let steps=`Langkah 1: Balik pecahan pembagi → ${fmtFrac(c,d)} jadi ${fmtFrac(d,c)}, ${fmtFrac(e,f)} jadi ${fmtFrac(f,e)}\n`;
   steps+=`Langkah 2: Kalikan semua → ${a}×${d}×${f}=${n}, ${b}×${c}×${e}=${den}\n`;
-  steps+=`Langkah 3: Hasil = ${fmtFrac(n,den)} = ${fmtFrac(nS,dS)}`;
+  steps+=`Langkah 3: Hasil = ${fmtFrac(n,den)} = ${fmtFrac(nS,dS)}\n`;
+  steps+=`Hasil campuran: ${toMixed(nS,dS)}`;
   return {n:nS,d:dS,steps};
 }
 
@@ -205,7 +225,22 @@ function compute(){
   return {n:0,d:1,steps:""}
 }
 function showSteps(){const {steps}=compute();el('steps').innerHTML=steps;el('status').textContent="Langkah ditampilkan"}
-function checkAnswer(){const {n,d}=compute();let an=parseInt(el('ansN').value||0),ad=parseInt(el('ansD').value||1);if(ad===0){el('status').textContent="Penyebut jawaban 0";return}const [anS,adS]=simplify(an,ad),[nS,dS]=simplify(n,d);el('status').textContent=(anS===nS&&adS===dS)?"Benar! 🎉":`Belum tepat → ${nS}/${dS}`}
+function checkAnswer(){
+  const {n,d}=compute();
+  // Jawaban siswa dalam bentuk campuran
+  let w=parseInt(el('ansW').value||0);
+  let an=parseInt(el('ansN').value||0);
+  let ad=parseInt(el('ansD').value||1);
+
+  if(ad===0){el('status').textContent="Penyebut jawaban 0";return}
+
+  // Konversi jawaban ke pecahan biasa
+  let num=w*ad+an,den=ad;
+  const [numS,denS]=simplify(num,den);
+  const [nS,dS]=simplify(n,d);
+
+  el('status').textContent=(numS===nS&&denS===dS)?"Benar! 🎉":`Belum tepat → ${nS}/${dS} atau ${toMixed(nS,dS)}`;
+}
 el('btnSteps').onclick=showSteps;el('btnCheck').onclick=checkAnswer;
 el('useThreeCamp').onchange=function(){el('colCamp3').style.display=this.checked?"block":"none";}
     if ("serviceWorker" in navigator) {
